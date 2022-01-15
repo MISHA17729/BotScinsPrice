@@ -1,0 +1,41 @@
+version: '2'
+
+services:
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - 8081:8081
+    networks:
+      - default
+  redis:
+    image: bitnami/redis:latest
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - 6379:6379
+    networks:
+      - default
+  redis-sentinel:
+    image: bitnami/redis-sentinel:latest
+    environment:
+      - REDIS_MASTER_HOST=localhost
+    ports:
+      - 26379:26379
+    networks:
+      - default
+
+volumes:
+  redis-commander:
+    driver: local
+  redis-sentinel_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 192.168.66.0/28
